@@ -203,7 +203,7 @@ switch Opstring
             end
             BpodSystem.SerialPort.write('X', 'uint8');
             pause(.1);
-            BpodSystem.SerialPort.flush;
+%             BpodSystem.SerialPort.flush;
             if BpodSystem.MachineType > 3
                 BpodSystem.AnalogSerialPort.flush;
             end
