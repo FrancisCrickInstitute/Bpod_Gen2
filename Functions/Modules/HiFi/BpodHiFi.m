@@ -33,7 +33,7 @@ classdef BpodHiFi < handle
     end
     methods
         function obj = BpodHiFi(portString)
-            obj.Port = ArCOMObject_Bpod(portString, 115200);
+            obj.Port = ArCOMObject_Bpod(portString, 115200, 'Java');
             obj.Port.write(243, 'uint8');
             Ack = obj.Port.read(1, 'uint8');
             if Ack ~= 244
