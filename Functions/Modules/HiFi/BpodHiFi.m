@@ -41,9 +41,9 @@ classdef BpodHiFi < handle
                 end
             end
             if PortType == 0
-                obj.Port = ArCOMObject_Bpod(portString, [], [], [], 64000, 64000);
+                obj.Port = ArCOMObject_Bpod(portString, [], [], [], 1000000, 1000000);
             elseif PortType == 1
-                obj.Port = ArCOMObject_Bpod(portString, [], 'Java', [], 128000, 128000);
+                obj.Port = ArCOMObject_Bpod(portString, [], 'Java', [], 1000000, 1000000);
             end
             obj.Port.write(243, 'uint8');
             Ack = obj.Port.read(1, 'uint8');
@@ -335,6 +335,16 @@ classdef BpodHiFi < handle
                 disp(['Test PASSED. ' num2str(memSize) ' MB detected.']);
             else
                 disp('Test FAILED');
+            end
+        end
+        function scanDuringUSBTransfer(obj, state)
+            if ~(state == 1 || state == 0)
+                error('State machine scan during USB transfer must be equal to 1 (enabled) or 0 (disabled)')
+            end
+            obj.Port.write(['&' state], 'uint8');
+            Confirmed = obj.Port.read(1, 'uint8');
+            if Confirmed ~= 1
+                error('Error setting state of scan during USB transfer. Confirm code not returned.');
             end
         end
         function delete(obj)
