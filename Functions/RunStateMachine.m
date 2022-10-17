@@ -181,6 +181,7 @@ while BpodSystem.Status.InStateMatrix
                             % Set global timer end-time
                             ThisGlobalTimer = BpodSystem.StateMatrix.OutputMatrix(NewState,BpodSystem.HW.Pos.GlobalTimerTrig);
                             if ThisGlobalTimer ~= 0
+                                ThisGlobalTimer = find([1 2 4 8 16 32 64] == ThisGlobalTimer); % code update to fix bug with global timer in emulator
                                 if BpodSystem.StateMatrix.GlobalTimers.OnsetDelay(ThisGlobalTimer) == 0
                                     BpodSystem.Emulator.GlobalTimerEnd(ThisGlobalTimer) = BpodSystem.Emulator.CurrentTime + BpodSystem.StateMatrix.GlobalTimers.Duration(ThisGlobalTimer);
                                     BpodSystem.Emulator.GlobalTimersActive(ThisGlobalTimer) = 1;
