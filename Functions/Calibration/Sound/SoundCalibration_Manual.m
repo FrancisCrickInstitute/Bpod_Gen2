@@ -53,7 +53,7 @@ H.AMenvelope = 1/192:1/192:1;
 FreqRangeError = 0;
 nTriesPerFrequency = 20;
 toneDuration = 5; % Seconds
-AcceptableDifference_dBSPL = 1;
+AcceptableDifference_dBSPL = 0.5;
 
 if (length(FreqRange) ~= 2) || (sum(FreqRange < 20) > 0) || (sum(FreqRange > 100000) > 0)
     FreqRangeError = 1;
