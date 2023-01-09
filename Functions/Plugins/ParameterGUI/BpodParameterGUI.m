@@ -228,7 +228,7 @@ switch Op
         end            
     case 'sync'
         ParamNames = BpodSystem.GUIData.ParameterGUI.ParamNames;
-        nParams = BpodSystem.GUIData.ParameterGUI.nParams;
+        nParams = length(ParamNames);
         for p = 1:nParams
             ThisParamName = ParamNames{p};
             ThisParamStyle = BpodSystem.GUIData.ParameterGUI.Styles(p);
