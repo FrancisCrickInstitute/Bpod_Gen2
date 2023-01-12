@@ -48,28 +48,14 @@ else
     error('Error: To run this protocol, you must first pair the HiFi module with its USB port. Click the USB config button on the Bpod console.')
 end
 
-%%%%% Get local computer address to adapt code for each setup %%%%%%
-% Find local user name (OS for dvlp)
-% Create local path name
-% Load sounds settings used during protocol
-load('/Users/boscm/Documents/MATLAB/Bpod_Gen2/Functions/Calibration/Sound/StimulusSettingsCalibration.mat')
-
-%%%%%%%% Sound stream should be created once only and then saved and reuse
-% Create one for DetectionConfidence and one for Detection2Sounds
-% Add gitignore to Github repo
-% Remove this piece of code as well as the option CalibrationStatus in GenerateNoise and
-% GenerateSignal
-% Create sounds stream:
-StimulusSettings.CalibrationStatus = 'ongoing';
-cd('/Users/boscm/Documents/MATLAB/Bpod Local/Protocols/DetectionConfidence');
-Sounds.Name = {'Noise','Signal'};
-Sounds.Stream{1} = GenerateNoise(StimulusSettings);
-Sounds.Stream{2} = GenerateSignal(StimulusSettings, Sounds.Stream{1});
-%%%%%%%%%%
+% Load sounds used during protocol to run calibration
+computerUsername = char(java.lang.System.getProperty('user.name'));
+load(['/Users/' computerUsername '/Documents/MATLAB/Bpod_Gen2/Functions/Calibration/Sound/soundsToCalibrate.mat'])
+pathToCalibFiles = ['/Users/' computerUsername '/Documents/MATLAB/Bpod Local/Calibration Files/'];
 
 % General sound params
 H.DigitalAttenuation_dB = 0;
-H.SamplingRate = StimulusSettings.SamplingRate;
+H.SamplingRate = 192000;
 nTriesPerSound = 20;
 soundDuration = 4; % Seconds
 AcceptableDifference_dBSPL = 0.5;
@@ -132,7 +118,7 @@ for s = 1:nSpeakers
 end
 
 %% Save sound calibration file
-save('/Users/boscm/Documents/MATLAB/Bpod Local/Calibration Files/SoundCalibrationOngoing.mat' , 'SoundCal')
+save([pathToCalibFiles '/SoundCalibrationOngoing.mat'] , 'SoundCal')
 
 %% Test of volume calibration
 
@@ -184,15 +170,15 @@ for s = 1:nSpeakers
         % add att factors to table for each sound
         SoundCal(s).Table{n} = ThisTable;
         SoundCal(s).Coefficient{n} = polyfit(ThisTable(:,1)',ThisTable(:,2)',1);
-        save('/Users/boscm/Documents/MATLAB/Bpod Local/Calibration Files/SoundCalibrationOngoing.mat' , 'SoundCal')
+        save([pathToCalibFiles 'SoundCalibrationOngoing.mat'] , 'SoundCal')
     end % each sound
 end % each speaker
 
 answer = questdlg('Successful sound calibration! Replace old calibration file','Yes');
 % replace old calibration file and delete temp calibration file
 if strcmp(answer,'Yes')
-    save('/Users/boscm/Documents/MATLAB/Bpod Local/Calibration Files/SoundCalibration.mat' , 'SoundCal')
-    delete('/Users/boscm/Documents/MATLAB/Bpod Local/Calibration Files/SoundCalibrationOngoing.mat')
+    save([pathToCalibFiles '/SoundCalibration.mat'] , 'SoundCal')
+    delete([pathToCalibFiles '/SoundCalibrationOngoing.mat'])
 end
 
 %%%% Adapt the code GenerateSound and GenerateSignal to new calibration
