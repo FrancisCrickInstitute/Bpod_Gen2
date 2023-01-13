@@ -168,8 +168,9 @@ for s = 1:nSpeakers
             end % each attempt to find att factor
         end % each volume value tested
         % add att factors to table for each sound
+        ThisTable = [0 0;ThisTable]; % add value zero so that calibration curve goes through zero
         SoundCal(s).Table{n} = ThisTable;
-        SoundCal(s).Coefficient{n} = polyfit(ThisTable(:,1)',ThisTable(:,2)',1);
+        SoundCal(s).Coefficient{n} = glmfit(ThisTable(:,1),ThisTable(:,2),'binomial');
         save([pathToCalibFiles 'SoundCalibrationOngoing.mat'] , 'SoundCal')
     end % each sound
 end % each speaker
@@ -181,5 +182,3 @@ if strcmp(answer,'Yes')
     delete([pathToCalibFiles '/SoundCalibrationOngoing.mat'])
 end
 
-%%%% Adapt the code GenerateSound and GenerateSignal to new calibration
-%%%% method
