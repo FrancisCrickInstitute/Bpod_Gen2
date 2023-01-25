@@ -27,15 +27,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 % dbSPL_Target is the target sound level for each frequency in dB SPL
 %
 % Example:
-% SoundCal = SoundCalibrationStimuli_Manual([40 80], 10, 60); 
+% SoundCal = SoundCalibrationStimuli_Manual([50 70], 5, 60); 
 % 1 - Find attenuation factors for target value (60 dB) for noise and then signal+noise
 % 2 - Test volume outputted using attenuation factor within volume range set 
 % (40dB to 80dB) for nValueToTest (10). 
 % 3 - Save calibration file in default location (BpodLocal folder).
 %
 
-
-% function SoundCal = SoundCalibrationStimuli_Manual(volumeRange,nValueToTest, dbSPL_Target, nSpeakers)
 function SoundCal = SoundCalibrationStimuli_Manual(volumeRange,nValueToTest, dbSPL_Target)
 
 global BpodSystem
@@ -56,7 +54,7 @@ pathToCalibFiles = ['/Users/' computerUsername '/Documents/MATLAB/Bpod Local/Cal
 H.DigitalAttenuation_dB = 0;
 H.SamplingRate = 192000;
 nTriesPerSound = 20;
-soundDuration = 4; % Seconds
+soundDuration = 5; % Seconds
 AcceptableDifference_dBSPL = 0.5;
 
 if (dbSPL_Target < 10) || (dbSPL_Target > 120)
