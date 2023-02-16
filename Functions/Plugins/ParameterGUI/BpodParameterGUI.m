@@ -290,7 +290,8 @@ switch Op
                             Params.GUI.(ThisParamName).(columnNames{iColumn}) = GUIParam(:,iColumn);
                         end
                     elseif any(argData(:) ~= ThisParamLastValue(:)) % Change originated in TaskParameters propagates to the GUI
-                        ThisParamHandle.Data = argData;
+                        %ThisParamHandle.Data = argData;
+                        set(ThisParamHandle, 'Data', argData); %KF edit
                     end     
             end
             if ThisParamStyle ~= 5
