@@ -1,3 +1,4 @@
+
 %{
 ----------------------------------------------------------------------------
 
@@ -155,18 +156,14 @@ for n = 1:length(Sounds.Name)
 end % each sound
 
 figure('Name','Sound calibration result'); 
-n = find(ismember(cellstr(SoundCal.Name),'Noise'));
-plot(SoundCal.Table{1,n}(:,1), SoundCal.Table{1,n}(:,2),'ok','LineStyle','none','MarkerFaceColor','k','MarkerSize',5);
-hold on;
-pl(1) = plot(linspace(40,90,100),glmval(SoundCal(1).Coefficient{n},linspace(40,90,100),'logit'),'--k');
-
-n = find(ismember(cellstr(SoundCal.Name),'Signal'));
-plot(SoundCal.Table{1,n}(:,1), SoundCal.Table{1,n}(:,2),'or','LineStyle','none','MarkerFaceColor','r','MarkerSize',5);
-hold on;
-pl(2) = plot(linspace(40,90,100),glmval(SoundCal(1).Coefficient{n},linspace(40,90,100),'logit'),'--r');
-xlim([40 90]);
-
-legend(pl, {'Noise', 'Signal'},'Location','Best')
+colors = [0 0 0;1 0 0; 0 1 0];
+for n = 1:length(Sounds.Name)
+    plot(SoundCal.Table{1,n}(:,1), SoundCal.Table{1,n}(:,2),'o','Color',colors(n,:),'LineStyle','none','MarkerFaceColor',colors(n,:),'MarkerSize',5);
+    hold on;
+    pl(n) = plot(linspace(min(SoundCal.Table{1,n}(:,1)),max(SoundCal.Table{1,n}(:,1)),100),...
+        glmval(SoundCal(1).Coefficient{n},linspace(min(SoundCal.Table{1,n}(:,1)),max(SoundCal.Table{1,n}(:,1)),100),'logit'),'--','Color',colors(n,:));
+end
+legend(pl,Sounds.Name ,'Location','Best')
 
 answer = questdlg('Successful sound calibration! Replace old calibration file','Yes');
 % replace old calibration file and delete temp calibration file
