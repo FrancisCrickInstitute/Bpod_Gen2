@@ -188,7 +188,7 @@ switch Op
                             htable = uitable(htab,'data',tableData,'columnname',columnLabel,...
                                 'ColumnEditable',true(1,numel(columnLabel)), 'FontSize', 12);
                             htable.Position([3 4]) = htable.Extent([3 4]);
-                            htable.Position([1 2]) = [HPos+220 VPos+InPanelPos+2];
+                            htable.Position([1 2]) = [HPos+160 VPos+InPanelPos+2];% [HPos+220 VPos+InPanelPos+2];
                             BpodSystem.GUIHandles.ParameterGUI.Params(ParamNum) = htable;
                             ThisPanelHeight = ThisPanelHeight + (htable.Position(4)-25);
                             BpodSystem.GUIHandles.ParameterGUI.Panels.(ThisTabPanelNames{p}).Position(4) = ThisPanelHeight;
