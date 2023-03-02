@@ -46,9 +46,16 @@ else
     error('Error: To run this protocol, you must first pair the HiFi module with its USB port. Click the USB config button on the Bpod console.')
 end
 
+% One signal calibration or two?
+signalsToCalibrate = inputdlg(sprintf('Calibrate one signal or two?'),'signalsToCalibrate',1,{'1'},'on');
 % Load sounds used during protocol to run calibration
 computerUsername = char(java.lang.System.getProperty('user.name'));
-load(['/Users/' computerUsername '/Documents/MATLAB/Bpod_Gen2/Functions/Calibration/Sound/soundsToCalibrate.mat'])
+if cell2mat(signalsToCalibrate)=='1' %one sound
+    load(['/Users/' computerUsername '/Documents/MATLAB/Bpod_Gen2/Functions/Calibration/Sound/soundsToCalibrate.mat'])
+elseif cell2mat(signalsToCalibrate)=='2'
+    load(['/Users/' computerUsername '/Documents/MATLAB/Bpod_Gen2/Functions/Calibration/Sound/soundsToCalibrate_twoSounds.mat'])
+end
+
 pathToCalibFiles = ['/Users/' computerUsername '/Documents/MATLAB/Bpod Local/Calibration Files/'];
 
 % General sound params
