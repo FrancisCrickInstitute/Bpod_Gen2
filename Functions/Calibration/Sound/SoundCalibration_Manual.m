@@ -29,8 +29,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 % Example:
 % SoundCal = SoundCalibration_Manual([1000 80000], 10, 60, 2); % Measure attenuation factors for 10
 % frequencies between 1khz and 80kHz such that a full scale tone * attenuation factor --> 60dB. Return a best-fit polynomial function for interpolation.
-% Psychosis Collective sound calibration example:
-% SoundCal = SoundCalibration_Manual([1000 20000], 10, 60, 2);
 %
 % Once SoundCal is returned, calibrated pure tones can be generated with CalibratedPureTone().
 % A sample-wise attentuation envelope for pure frequency sweep waveforms can be calculated
@@ -51,7 +49,7 @@ H.DigitalAttenuation_dB = -15;
 H.SamplingRate = 192000;
 H.AMenvelope = 1/192:1/192:1;
 FreqRangeError = 0;
-nTriesPerFrequency = 20;
+nTriesPerFrequency = 7;
 toneDuration = 5; % Seconds
 AcceptableDifference_dBSPL = 0.5;
 
@@ -88,8 +86,6 @@ for s = 1:nSpeakers
     ThisTable = zeros(nMeasurements, 2);
     disp([char(10) 'Begin calibrating ' SpeakerNames{s} ' speaker.'])
     for m = 1:nMeasurements
-%         attemptToPlot = []; 
-        suggestedValue = 0;
         attFactor = 0.2;
         found = 0;
         nTries = 0;
@@ -98,7 +94,7 @@ for s = 1:nSpeakers
             if nTries > nTriesPerFrequency
                 error(['Error: Could not resolve an attenuation factor for ' num2str(FrequencyVector(m))])
             end
-            input([num2str(nTries) ' - Press Enter to play the next tone (' num2str(m) '/' num2str(nMeasurements) '). This tone = ' num2str(FrequencyVector(m)) ' Hz, ' num2str(attFactor) ' FS amplitude.'], 's'); 
+            input(['Press Enter to play the next tone. This tone = ' num2str(FrequencyVector(m)) ' Hz, ' num2str(attFactor) ' FS amplitude.'], 's'); 
             Wave = GenerateSineWave(192000, FrequencyVector(m), toneDuration)*attFactor;
             if s == 1
                 H.load(1, [Wave; zeros(1,length(Wave))]); H.push; pause(.1);
@@ -114,25 +110,8 @@ for s = 1:nSpeakers
                 ThisTable(m,2) = attFactor;
                 found = 1;
             else
-%                 if dbSPL_Measured<80
-%                     attemptToPlot(1:2,nTries) = [attFactor; dbSPL_Measured];
-%                 end
-%                 figure; f1 = scatter(attemptToPlot(1,:),attemptToPlot(2,:),'+b'); hold on
-%                 if size(attemptToPlot,2)>2
-%                     P = polyfit(attemptToPlot(1,:),attemptToPlot(2,:),2);
-%                     xarray = linspace(min(attemptToPlot(1,:)),max(attemptToPlot(1,:)),20);
-%                     yfit = polyval(P,xarray);
-%                     plot(xarray,yfit,'k-.');
-%                     suggestedValue = mean(xarray(yfit>59 &yfit<61));
-%                     plot([suggestedValue suggestedValue],[f1.Parent.YLim(1) 60],'-g');
-%                     plot([f1.Parent.XLim(1) suggestedValue],[60 60],'-g')
-%                 end
-%                 xlabel('Attenuation factor'); ylabel('dbSPL measured');
                 AmpFactor = sqrt(10^((dbSPL_Measured - dbSPL_Target)/10));
                 attFactor = attFactor/AmpFactor;
-%                 plot( [attFactor attFactor],  f1.Parent.YLim,'--r');
-                attFactor2 = input(['Next attenuation factor tested:' num2str(attFactor) '. Alternative attenuation factor to test:' num2str(suggestedValue) '? ']);
-                if attFactor2>0; attFactor=attFactor2; end; clear attFactor2 P yfit
             end
         end
     end
