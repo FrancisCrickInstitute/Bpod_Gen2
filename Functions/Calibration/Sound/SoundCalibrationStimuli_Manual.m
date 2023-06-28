@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 % dbSPL_Target is the target sound level for each frequency in dB SPL
 %
 % Example:
-% SoundCal = SoundCalibrationStimuli_Manual([50 70], 5, 60); 
+% SoundCal = SoundCalibrationStimuli_Manual([45 95], 6, 60); 
 % 1 - Find attenuation factors for target value (60 dB) for noise and then signal+noise
 % 2 - Test volume outputted using attenuation factor within volume range set 
 % (40dB to 80dB) for nValueToTest (10). 
@@ -63,7 +63,7 @@ H.DigitalAttenuation_dB = 0;
 H.SamplingRate = 192000;
 nTriesPerSound = 20;
 soundDuration = 5; % Seconds
-AcceptableDifference_dBSPL = 0.5;
+AcceptableDifference_dBSPL = 1;
 
 if (dbSPL_Target < 10) || (dbSPL_Target > 120)
     error('Error: target dB SPL must be in range [10, 120]')
@@ -137,7 +137,7 @@ for n = 1:length(Sounds.Name)
                 error(['Error: Could not resolve an attenuation factor for ' num2str(volumeVector(v))])
             end
             sound = Sounds.Stream{n} * attFactor;
-            input([num2str(nTries) ' - Press Enter to play the next tone (' num2str(v) '/' num2str(nValueToTest) '). ' Sounds.Name{n} ' : ' num2str(volumeVector(v)) ' Hz, ' num2str(attFactor) ' FS amplitude.'], 's'); 
+            input([num2str(nTries) ' - Press Enter to play the next tone (' num2str(v) '/' num2str(nValueToTest) '). ' Sounds.Name{n} ' : ' num2str(volumeVector(v)) ' dB, ' num2str(attFactor) ' FS amplitude.'], 's'); 
             H.load(1, [sound; sound], 'LoopMode', 1, 'LoopDuration', soundDuration); 
             H.push; pause(.1);
             H.play(1);
@@ -158,7 +158,8 @@ for n = 1:length(Sounds.Name)
     % add att factors to table for each sound
     ThisTable = [0 0;ThisTable]; % add value zero so that calibration curve goes through zero
     SoundCal.Table{n} = ThisTable;
-    SoundCal.Coefficient{n} = glmfit(ThisTable(:,1),ThisTable(:,2),'binomial');
+    idxToFit = ThisTable(:,2)<1; % ignore attFactor>1 to fit 
+    SoundCal.Coefficient{n} = glmfit(ThisTable(idxToFit,1),ThisTable(idxToFit,2),'binomial');
     save([pathToCalibFiles 'SoundCalibrationOngoing.mat'] , 'SoundCal')
 end % each sound
 
