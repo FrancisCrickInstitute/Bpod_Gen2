@@ -181,6 +181,9 @@ switch Opstring
             end
         end
     case 'Stop'
+        timeSinceSessionStart = now*100000 - BpodSystem.ProtocolStartTime;  %KF record session end time
+        BpodSystem.Data.Custom.ProtocolEndTime = timeSinceSessionStart;
+        SaveBpodSessionData;
         % execute userkillscript when protocol stopped if found in protocol folder
         try
             Protocol=BpodSystem.Status.CurrentProtocolName; %look for Protocol name
