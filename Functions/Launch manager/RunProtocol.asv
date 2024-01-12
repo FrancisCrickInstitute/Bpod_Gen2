@@ -189,7 +189,7 @@ switch Opstring
             Protocol=BpodSystem.Status.CurrentProtocolName; %look for Protocol name
             if exist(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript.m'))~=0 % if file directly in folder
                 run(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript.m')); %run UserKillScript script found in protocol folder
-            elseif  exist(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript','UserKillScript.m'))~=0 && exist(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript.m'))==0 %if file not directly in folder but in a UserKillScript folder from github
+            elseif  exist(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript','UserKillScript.m'))~=0 && exist(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript.m'))==0
                 run(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript','UserKillScript.m'));
             end
         catch
