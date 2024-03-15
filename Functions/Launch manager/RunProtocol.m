@@ -187,12 +187,19 @@ switch Opstring
         % execute userkillscript when protocol stopped if found in protocol folder
         try
             Protocol=BpodSystem.Status.CurrentProtocolName; %look for Protocol name
-            if exist(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript.m'))~=0 % if file directly in folder
-                run(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript.m')); %run UserKillScript script found in protocol folder
-            elseif  exist(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript','UserKillScript.m'))~=0 && exist(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript.m'))==0 %if file not directly in folder but in a UserKillScript folder from github
-                run(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript','UserKillScript.m'));
+            run(fullfile(BpodSystem.Path.ProtocolFolder,Protocol,'UserKillScript.m')); %run UserKillScript script found in protocol folder
+        catch % no UserKillScript or issue during execution
+            warning('UserKillScript not executed. Check that your protocol folder contains a UserKillScript.m file')
+            % Stop Hifi module if still open
+            if  ~BpodSystem.EmulatorMode
+                try
+                    BpodSystem.PluginObjects.H.stop; 
+                    BpodSystem.PluginObjects = rmfield(BpodSystem.PluginObjects,'H');
+                    fprintf('Hifi module successfully stopped.')
+                catch
+                    fprintf('Hifi module not stopped.')
+                end
             end
-        catch
         end
         
         if ~isempty(BpodSystem.Status.CurrentProtocolName)
