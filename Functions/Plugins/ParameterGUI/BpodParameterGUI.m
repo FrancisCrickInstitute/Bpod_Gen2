@@ -91,7 +91,7 @@ switch Op
         
         Params = Params.GUI;
         PanelNames = PanelNames(end:-1:1);
-        GUIHeight = 650;
+        GUIHeight = 750;
         MaxVPos = 0;
         MaxHPos = 0;
         ParamNum = 1;

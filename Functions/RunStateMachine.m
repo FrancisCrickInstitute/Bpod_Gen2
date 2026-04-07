@@ -23,14 +23,14 @@ TimeScaleFactor = (BpodSystem.HW.CyclePeriod/1000);
 if isempty(BpodSystem.StateMatrixSent)
     error('Error: A state matrix must be sent prior to calling "RunStateMatrix".')
 end
-usingBonsai = 0;
-if ~isempty(BpodSystem.BonsaiSocket)
-    usingBonsai = 1;
-    BonsaiBytesAvailable = BpodSystem.BonsaiSocket.bytesAvailable;
-    if BonsaiBytesAvailable > 0
-        BpodSystem.BonsaiSocket.read(BonsaiBytesAvailable, 'uint8');
-    end
-end
+% usingBonsai = 0;
+% if ~isempty(BpodSystem.BonsaiSocket)
+%     usingBonsai = 1;
+%     BonsaiBytesAvailable = BpodSystem.BonsaiSocket.NumBytesAvailable;
+%     if BonsaiBytesAvailable > 0
+%         read(BpodSystem.BonsaiSocket, BonsaiBytesAvailable, 'uint8');
+%     end
+% end
 if sum(BpodSystem.Modules.RelayActive) > 0
     BpodSystem.StopModuleRelay();
 end
@@ -99,18 +99,8 @@ SetBpodHardwareMirror2CurrentState(1);
 BpodSystem.RefreshGUI;
 BpodSystem.Status.InStateMatrix = 1;
 while BpodSystem.Status.InStateMatrix
-    if usingBonsai
-        if BpodSystem.BonsaiSocket.bytesAvailable() > 15
-            OscMsg = BpodSystem.BonsaiSocket.read(16, 'uint8');
-            BonsaiByte = OscMsg(end);
-            if BpodSystem.EmulatorMode == 0
-                SendBpodSoftCode(BonsaiByte);
-            else
-                BpodSystem.VirtualManualOverrideBytes = ['~' BonsaiByte];
-                BpodSystem.ManualOverrideFlag = 1;
-            end
-        end
-    end
+        % if usingBonsai
+        % end
     if BpodSystem.EmulatorMode == 0
         SerialPortBytesAvailable = BpodSystem.SerialPort.bytesAvailable;
         if SerialPortBytesAvailable > 0

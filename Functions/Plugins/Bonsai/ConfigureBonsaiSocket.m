@@ -55,7 +55,10 @@ global BpodSystem
 if isempty(BpodSystem.BonsaiSocket)
     set(BpodSystem.GUIHandles.BonsaiConnectStatus, 'String', 'Connecting', 'ForegroundColor', 'y'); drawnow;
     try
-        BpodSystem.BonsaiSocket = TCPCom(11235);
+        % BpodSystem.BonsaiSocket = TCPCom(1125); %original Line
+        BonsaiPort = str2double(get(BpodSystem.GUIHandles.BonsaiPortEdit, 'String'));
+        BonsaiIP = get(BpodSystem.GUIHandles.BonsaiIPEdit, 'String');
+        BpodSystem.BonsaiSocket = tcpclient(BonsaiIP, BonsaiPort);
     catch
         set(BpodSystem.GUIHandles.BonsaiConnectStatus, 'String', 'Disconnected', 'ForegroundColor', 'r');
         rethrow(lasterror);
